@@ -1,35 +1,23 @@
 package com.thevoxelbox.voxeldoop;
 
+import com.thevoxelbox.voxeldoop.tools.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.thevoxelbox.voxeldoop.tools.Chainsaw;
-import com.thevoxelbox.voxeldoop.tools.DataSpanner;
-import com.thevoxelbox.voxeldoop.tools.DoopStick;
-import com.thevoxelbox.voxeldoop.tools.Hammer;
-import com.thevoxelbox.voxeldoop.tools.Jackhammer;
-import com.thevoxelbox.voxeldoop.tools.PaintBrush;
-import com.thevoxelbox.voxeldoop.tools.Pliers;
-import com.thevoxelbox.voxeldoop.tools.Shovel;
-import com.thevoxelbox.voxeldoop.tools.Watch;
-
-public class VoxelDoop extends JavaPlugin
-{
+public class VoxelDoop extends JavaPlugin {
     private final ToolManager toolManager;
     private final DoopListener listener;
 
-    public VoxelDoop()
-    {
+    public VoxelDoop() {
         this.toolManager = new ToolManager(this);
         this.listener = new DoopListener(this);
     }
 
     @Override
-    public void onEnable()
-    {
+    public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this.listener, this);
         this.toolManager.registerTool(new Jackhammer());
         this.toolManager.registerTool(new PaintBrush());
@@ -43,9 +31,8 @@ public class VoxelDoop extends JavaPlugin
     }
 
     @Override
-    public void onDisable()
-    {
-        
+    public void onDisable() {
+
     }
 
     @Override
@@ -81,17 +68,14 @@ public class VoxelDoop extends JavaPlugin
 
             return true;
         }
-        if (commandName.equalsIgnoreCase("scisays"))
-        {
-            if (args.length < 1)
-            {
+        if (commandName.equalsIgnoreCase("scisays")) {
+            if (args.length < 1) {
                 return false;
             }
 
             String godmsg = "";
 
-            for (String str : args)
-            {
+            for (String str : args) {
                 godmsg = (godmsg + str + " ");
             }
 

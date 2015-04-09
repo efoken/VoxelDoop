@@ -1,8 +1,10 @@
 package com.thevoxelbox.voxeldoop.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.thevoxelbox.voxeldoop.BlockRemoveingTool;
+import com.thevoxelbox.voxeldoop.configuration.ConfigurationGetter;
+import com.thevoxelbox.voxeldoop.configuration.ConfigurationSetter;
+import com.thevoxelbox.voxeldoop.events.DoopPaintEvent;
+import com.thevoxelbox.voxeldoop.util.BlockInfoWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,48 +14,35 @@ import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.thevoxelbox.voxeldoop.BlockRemoveingTool;
-import com.thevoxelbox.voxeldoop.configuration.ConfigurationGetter;
-import com.thevoxelbox.voxeldoop.configuration.ConfigurationSetter;
-import com.thevoxelbox.voxeldoop.events.DoopPaintEvent;
-import com.thevoxelbox.voxeldoop.util.BlockInfoWrapper;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PaintBrush extends BlockRemoveingTool
-{
+public class PaintBrush extends BlockRemoveingTool {
     private String brushLore = "VoxelBox Magic Paintbrush";
 
-    public PaintBrush()
-    {
+    public PaintBrush() {
         this.setName("Paint Brush");
         this.setToolMaterial(Material.SLIME_BALL);
     }
 
     @Override
-    public void onUse(final Block targetBlock, final BlockFace face, final ItemStack itemUsed, final Player player, final Action action)
-    {
-        if (!itemUsed.hasItemMeta())
-        {
+    public void onUse(final Block targetBlock, final BlockFace face, final ItemStack itemUsed, final Player player, final Action action) {
+        if (!itemUsed.hasItemMeta()) {
             itemUsed.setItemMeta(Bukkit.getItemFactory().getItemMeta(itemUsed.getType()));
         }
 
-        if (action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR)
-        {
+        if (action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) {
             this.setBrushMeterial(itemUsed, itemUsed.getItemMeta(), targetBlock.getType(), targetBlock.getData());
-        }
-        else
-        {
+        } else {
             final BlockInfoWrapper wrapper = this.getMeterialAndDataFromBrush(itemUsed.getItemMeta());
-            if (wrapper == null)
-            {
+            if (wrapper == null) {
                 return;
             }
-            if (wrapper.getMaterial() != null)
-            {
+            if (wrapper.getMaterial() != null) {
                 if (!this.canBreak(player, targetBlock)) return;
                 final DoopPaintEvent paintEvent = new DoopPaintEvent(targetBlock, player, wrapper.getMaterial(), wrapper.getData());
                 Bukkit.getPluginManager().callEvent(paintEvent);
-                if (paintEvent.isCancelled())
-                {
+                if (paintEvent.isCancelled()) {
                     return;
                 }
                 targetBlock.setTypeIdAndData(paintEvent.getTargetMaterial().getId(), paintEvent.getTargetData(), false);
@@ -62,23 +51,17 @@ public class PaintBrush extends BlockRemoveingTool
     }
 
     @Override
-    public void onRangedUse(final Block targetBlock, final BlockFace face, final ItemStack itemUsed, Player player, Action action)
-    {
-        if ((action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) && !targetBlock.isLiquid())
-        {
+    public void onRangedUse(final Block targetBlock, final BlockFace face, final ItemStack itemUsed, Player player, Action action) {
+        if ((action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) && !targetBlock.isLiquid()) {
             this.setBrushMeterial(itemUsed, itemUsed.getItemMeta(), targetBlock.getType(), targetBlock.getData());
         }
     }
 
-    private BlockInfoWrapper getMeterialAndDataFromBrush(final ItemMeta item)
-    {
-        if (item.hasLore())
-        {
+    private BlockInfoWrapper getMeterialAndDataFromBrush(final ItemMeta item) {
+        if (item.hasLore()) {
             List<String> lore = item.getLore();
-            if (lore.size() == 3)
-            {
-                if (lore.get(0).equals(this.brushLore))
-                {
+            if (lore.size() == 3) {
+                if (lore.get(0).equals(this.brushLore)) {
                     return new BlockInfoWrapper(Material.getMaterial(lore.get(1)), Byte.parseByte(lore.get(2)));
                 }
             }
@@ -86,10 +69,9 @@ public class PaintBrush extends BlockRemoveingTool
         return null;
     }
 
-    private void setBrushMeterial(final ItemStack itemApplyed, final ItemMeta item, final Material mat, final byte data)
-    {
+    private void setBrushMeterial(final ItemStack itemApplyed, final ItemMeta item, final Material mat, final byte data) {
         item.setDisplayName(this.getFriendlyBlockName(mat.toString()) + "Paintbrush");
-        List<String> lore = new ArrayList<>();
+        List<String> lore = new ArrayList<String>();
         lore.add(this.brushLore);
         lore.add(mat.toString());
         lore.add(String.valueOf(data));
@@ -97,15 +79,12 @@ public class PaintBrush extends BlockRemoveingTool
         itemApplyed.setItemMeta(item);
     }
 
-    private String getFriendlyBlockName(final String rawName)
-    {
+    private String getFriendlyBlockName(final String rawName) {
         final String[] split = rawName.toLowerCase().split("_");
         final StringBuilder builder = new StringBuilder();
-        for (String str : split)
-        {
+        for (String str : split) {
             final char[] cStr = str.toCharArray();
-            if (cStr.length > 1)
-            {
+            if (cStr.length > 1) {
                 cStr[0] = Character.toUpperCase(cStr[0]);
             }
             builder.append(cStr).append(" ");
@@ -114,14 +93,12 @@ public class PaintBrush extends BlockRemoveingTool
     }
 
     @ConfigurationGetter("brush-lore")
-    public String getBrushLore()
-    {
+    public String getBrushLore() {
         return brushLore;
     }
 
     @ConfigurationSetter("brush-lore")
-    public void setBrushLore(final String brushLore)
-    {
+    public void setBrushLore(final String brushLore) {
         this.brushLore = brushLore;
     }
 }

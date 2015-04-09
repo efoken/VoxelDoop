@@ -9,23 +9,19 @@ import org.bukkit.event.HandlerList;
  *
  * @author TheCryoknight
  */
-public class DoopDestroyEvent extends DoopEvent
-{
+public class DoopDestroyEvent extends DoopEvent {
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
-    public DoopDestroyEvent(final Block targetBlock, final Player toolUser)
-    {
+    public DoopDestroyEvent(final Block targetBlock, final Player toolUser) {
         super(targetBlock, toolUser);
     }
 
     @Override
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return HANDLER_LIST;
     }
 
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return HANDLER_LIST;
     }
 }

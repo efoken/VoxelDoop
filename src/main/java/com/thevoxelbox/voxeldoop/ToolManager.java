@@ -1,9 +1,7 @@
 package com.thevoxelbox.voxeldoop;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.thevoxelbox.voxeldoop.configuration.Configuration;
+import com.thevoxelbox.voxeldoop.util.BlockRangeHelper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,64 +10,55 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
-import com.thevoxelbox.voxeldoop.configuration.Configuration;
-import com.thevoxelbox.voxeldoop.util.BlockRangeHelper;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Manages all tool registration, use, and permissions.
  *
  * @author TheCryoknight
  */
-public class ToolManager
-{
+public class ToolManager {
     private static final String RANGED_PERM_PREFIX = "voxeldoop.ranged.";
     private static final String PERM_PREFIX = "voxeldoop.use.";
 
     private final VoxelDoop plugin;
-    private final Map<Material, ITool> registeredTools = new HashMap<>();
+    private final Map<Material, ITool> registeredTools = new HashMap<Material, ITool>();
 
-    public ToolManager(final VoxelDoop plugin)
-    {
+    public ToolManager(final VoxelDoop plugin) {
         Validate.notNull(plugin, "Cannot run if plugin is null");
         this.plugin = plugin;
     }
 
-    public void registerTool(final ITool newTool)
-    {
+    public void registerTool(final ITool newTool) {
         Validate.notNull(newTool, "You cannot register null tools");
         this.loadToolConfig(newTool);
         Validate.notNull(newTool.getToolMaterial(), "You cannot register tools without a tool material");
         Validate.notNull(newTool.getName(), "You cannot register tools with no name");
         Validate.isTrue(!newTool.getName().isEmpty(), "You cannot register tools with no name");
         Validate.isTrue(!this.registeredTools.containsKey(newTool.getToolMaterial()), "You cannot register multiple tools with the same material");
-        
+
         this.registeredTools.put(newTool.getToolMaterial(), newTool);
         this.plugin.getLogger().info("Registered tool: " + newTool.getName());
     }
 
     @SuppressWarnings("deprecation")
-    public void onRangedUse(final Player player, final ItemStack itemUsed, Action action)
-    {
-        if (this.registeredTools.containsKey(itemUsed.getType()))
-        {
+    public void onRangedUse(final Player player, final ItemStack itemUsed, Action action) {
+        if (this.registeredTools.containsKey(itemUsed.getType())) {
             final BlockRangeHelper rangeHelper = new BlockRangeHelper(player, player.getWorld());
             final Block tarBlock = rangeHelper.getTargetBlock();
             final Block previousBlock = rangeHelper.getLastBlock();
-            if (tarBlock != null && previousBlock != null)
-            {
+            if (tarBlock != null && previousBlock != null) {
                 final BlockFace tarFace = tarBlock.getFace(previousBlock);
                 final ITool tool = this.registeredTools.get(itemUsed.getType());
-                if (player.hasPermission(ToolManager.RANGED_PERM_PREFIX + tool.getName().replaceAll(" ", "").toLowerCase()))
-                {
-                    try
-                    {
+                if (player.hasPermission(ToolManager.RANGED_PERM_PREFIX + tool.getName().replaceAll(" ", "").toLowerCase())) {
+                    try {
                         tool.onRangedUse(tarBlock, tarFace, itemUsed, player, action);
                         itemUsed.setDurability((short) 0);
                         player.updateInventory();
-                        
-                    }
-                    catch (final Exception e)
-                    {
+
+                    } catch (final Exception e) {
                         this.plugin.getLogger().severe("Tool Error: Could not pass ranged tool use to " + tool.getName());
                         e.printStackTrace();
                     }
@@ -79,22 +68,16 @@ public class ToolManager
     }
 
     @SuppressWarnings("deprecation")
-    public boolean onUse(final Player player, final ItemStack itemUsed, Action action, Block tarBlock, BlockFace tarFace)
-    {
-        if (this.registeredTools.containsKey(itemUsed.getType()))
-        {
+    public boolean onUse(final Player player, final ItemStack itemUsed, Action action, Block tarBlock, BlockFace tarFace) {
+        if (this.registeredTools.containsKey(itemUsed.getType())) {
             final ITool tool = this.registeredTools.get(itemUsed.getType());
-            if (player.hasPermission(ToolManager.PERM_PREFIX + tool.getName().replaceAll(" ", "").toLowerCase()))
-            {
-                try
-                {
+            if (player.hasPermission(ToolManager.PERM_PREFIX + tool.getName().replaceAll(" ", "").toLowerCase())) {
+                try {
                     Validate.notNull(tarFace);
                     this.registeredTools.get(itemUsed.getType()).onUse(tarBlock, tarFace, itemUsed, player, action);
                     itemUsed.setDurability((short) 0);
                     player.updateInventory();
-                }
-                catch (final Exception e)
-                {
+                } catch (final Exception e) {
                     this.plugin.getLogger().severe("Tool Error: Could not pass tool use to " + tool.getName());
                     e.printStackTrace();
                 }
@@ -104,14 +87,10 @@ public class ToolManager
         return false;
     }
 
-    private void loadToolConfig(final ITool tool)
-    {
-        try
-        {
+    private void loadToolConfig(final ITool tool) {
+        try {
             Configuration.loadConfiguration(new File("plugins" + File.separator + "VoxelDoop" + File.separator + tool.getName().replaceAll(" ", "") + ".properties"), tool);
-        }
-        catch(final Exception e)
-        {
+        } catch (final Exception e) {
             this.plugin.getLogger().severe("Tool Error: Could not load tool config for" + tool.getName());
             e.printStackTrace();
         }

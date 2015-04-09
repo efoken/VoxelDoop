@@ -6,12 +6,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class DoopListener implements Listener
-{
+public class DoopListener implements Listener {
     private final VoxelDoop plugin;
 
-    public DoopListener(final VoxelDoop plugin)
-    {
+    public DoopListener(final VoxelDoop plugin) {
         this.plugin = plugin;
     }
 
@@ -30,23 +28,16 @@ public class DoopListener implements Listener
     }*/
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event)
-    {
-        if (event.hasItem())
-        {
-            if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
-            {
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.hasItem()) {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 ItemStack hand = event.getPlayer().getItemInHand();
-                if(hand.getAmount() <= 32 && hand.getAmount() >= 2) hand.setAmount(64);
+                if (hand.getAmount() <= 32 && hand.getAmount() >= 2) hand.setAmount(64);
             }
-            if (event.getClickedBlock() == null)
-            {
+            if (event.getClickedBlock() == null) {
                 this.plugin.getToolManager().onRangedUse(event.getPlayer(), event.getItem(), event.getAction());
-            }
-            else
-            {
-                if (this.plugin.getToolManager().onUse(event.getPlayer(), event.getItem(), event.getAction(), event.getClickedBlock(), event.getBlockFace()))
-                {
+            } else {
+                if (this.plugin.getToolManager().onUse(event.getPlayer(), event.getItem(), event.getAction(), event.getClickedBlock(), event.getBlockFace())) {
                     event.setCancelled(true);
                 }
             }
