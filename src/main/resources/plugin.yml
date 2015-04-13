@@ -1,6 +1,6 @@
-name: ${project.name}
+name: VoxelDoop
 main: com.thevoxelbox.voxeldoop.VoxelDoop
-version: ${project.version}
+version: 4.0.0
 website: http://thevoxelbox.com
 author: TheCryoKnight
 softdepend: [VoxelGuest]
