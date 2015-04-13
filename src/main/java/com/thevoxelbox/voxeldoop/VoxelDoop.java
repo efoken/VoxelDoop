@@ -42,75 +42,35 @@ public class VoxelDoop extends JavaPlugin {
             if (args.length < 1) {
                 return false;
             }
-
-            String godmsg = "";
-
-            for (String str : args) {
-                godmsg = (godmsg + str + " ");
-            }
-
-            Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "[GOD] " + godmsg.toUpperCase());
-
+            Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "[GOD] " + argsToString(args).toUpperCase());
             return true;
         }
         if (commandName.equalsIgnoreCase("evilsays")) {
             if (args.length < 1) {
                 return false;
             }
-
-            String godmsg = "";
-
-            for (String str : args) {
-                godmsg = (godmsg + str + " ");
-            }
-
-            Bukkit.broadcastMessage(ChatColor.DARK_RED + "[EVIL] " + godmsg);
-
+            Bukkit.broadcastMessage(ChatColor.DARK_RED + "[EVIL] " + argsToString(args));
             return true;
         }
         if (commandName.equalsIgnoreCase("scisays")) {
             if (args.length < 1) {
                 return false;
             }
-
-            String godmsg = "";
-
-            for (String str : args) {
-                godmsg = (godmsg + str + " ");
-            }
-
-            Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[SCIENCE] " + godmsg);
-
+            Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[SCIENCE] " + argsToString(args));
             return true;
         }
         if (commandName.equalsIgnoreCase("phisays")) {
             if (args.length < 1) {
                 return false;
             }
-
-            String godmsg = "";
-
-            for (String str : args) {
-                godmsg = (godmsg + str + " ");
-            }
-
-            Bukkit.broadcastMessage(ChatColor.AQUA + "[PHILOSOPHY] " + godmsg);
-
+            Bukkit.broadcastMessage(ChatColor.AQUA + "[PHILOSOPHY] " + argsToString(args));
             return true;
         }
         if (commandName.equalsIgnoreCase("ignsays")) {
             if (args.length < 1) {
                 return false;
             }
-
-            String godmsg = "";
-
-            for (String str : args) {
-                godmsg = (godmsg + str + " ");
-            }
-
-            Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[IGNORANCE] " + godmsg.toLowerCase());
-
+            Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[IGNORANCE] " + argsToString(args).toLowerCase());
             return true;
         }
         return false;
@@ -123,5 +83,13 @@ public class VoxelDoop extends JavaPlugin {
      */
     public ToolManager getToolManager() {
         return toolManager;
+    }
+
+    private String argsToString(String[] args) {
+        String message = "";
+        for (String str : args) {
+            message = (message + str + " ");
+        }
+        return message;
     }
 }
