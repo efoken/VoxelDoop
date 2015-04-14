@@ -24,21 +24,20 @@ public class ToolManager {
     private static final String PERM_PREFIX = "voxeldoop.use.";
 
     private final VoxelDoop plugin;
-    private final Map<Material, ITool> registeredTools = new HashMap<Material, ITool>();
+    private final Map<Material, ToolInterface> registeredTools = new HashMap<Material, ToolInterface>();
 
     public ToolManager(final VoxelDoop plugin) {
         Validate.notNull(plugin, "Cannot run if plugin is null");
         this.plugin = plugin;
     }
 
-    public void registerTool(final ITool newTool) {
+    public void registerTool(final ToolInterface newTool) {
         Validate.notNull(newTool, "You cannot register null tools");
         this.loadToolConfig(newTool);
         Validate.notNull(newTool.getToolMaterial(), "You cannot register tools without a tool material");
         Validate.notNull(newTool.getName(), "You cannot register tools with no name");
         Validate.isTrue(!newTool.getName().isEmpty(), "You cannot register tools with no name");
         Validate.isTrue(!this.registeredTools.containsKey(newTool.getToolMaterial()), "You cannot register multiple tools with the same material");
-
         this.registeredTools.put(newTool.getToolMaterial(), newTool);
         this.plugin.getLogger().info("Registered tool: " + newTool.getName());
     }
@@ -51,7 +50,7 @@ public class ToolManager {
             final Block previousBlock = rangeHelper.getLastBlock();
             if (tarBlock != null && previousBlock != null) {
                 final BlockFace tarFace = tarBlock.getFace(previousBlock);
-                final ITool tool = this.registeredTools.get(itemUsed.getType());
+                final ToolInterface tool = this.registeredTools.get(itemUsed.getType());
                 if (player.hasPermission(ToolManager.RANGED_PERM_PREFIX + tool.getName().replaceAll(" ", "").toLowerCase())) {
                     try {
                         tool.onRangedUse(tarBlock, tarFace, itemUsed, player, action);
@@ -70,7 +69,7 @@ public class ToolManager {
     @SuppressWarnings("deprecation")
     public boolean onUse(final Player player, final ItemStack itemUsed, Action action, Block tarBlock, BlockFace tarFace) {
         if (this.registeredTools.containsKey(itemUsed.getType())) {
-            final ITool tool = this.registeredTools.get(itemUsed.getType());
+            final ToolInterface tool = this.registeredTools.get(itemUsed.getType());
             if (player.hasPermission(ToolManager.PERM_PREFIX + tool.getName().replaceAll(" ", "").toLowerCase())) {
                 try {
                     Validate.notNull(tarFace);
@@ -87,7 +86,7 @@ public class ToolManager {
         return false;
     }
 
-    private void loadToolConfig(final ITool tool) {
+    private void loadToolConfig(final ToolInterface tool) {
         try {
             Configuration.loadConfiguration(new File("plugins" + File.separator + "VoxelDoop" + File.separator + tool.getName().replaceAll(" ", "") + ".properties"), tool);
         } catch (final Exception e) {

@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
-public interface ITool {
+public interface ToolInterface {
     /**
      * Gets the name of this tool. The name of the tool can not be null or
      * empty.

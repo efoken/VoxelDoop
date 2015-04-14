@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class AbstractTool implements ITool {
+public abstract class AbstractTool implements ToolInterface {
     private String toolName = "Default Tool Name (Yell at the developer if you see this)";
     private Material toolMaterial = Material.AIR;
 
